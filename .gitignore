@@ -22,4 +22,6 @@ backend/static/
 /tmp/
 .tmp/
 .shuttle/
-**/.shuttle/
+**/.shuttle//target
+.shuttle*
+Secrets*.toml
