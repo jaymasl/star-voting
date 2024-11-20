@@ -1,3 +1,4 @@
 name = "star-voting"
 database = true
 secrets = ["Secrets.toml"]
+assets = ["backend/static/*"]
