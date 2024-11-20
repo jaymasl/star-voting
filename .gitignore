@@ -21,3 +21,5 @@ backend/static/
 /coverage/
 /tmp/
 .tmp/
+.shuttle/
+**/.shuttle/
