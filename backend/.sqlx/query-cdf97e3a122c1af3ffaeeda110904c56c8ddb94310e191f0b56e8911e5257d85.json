@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO archived_votes.ballots (id, vote_id, user_fingerprint, scores, cast_at)\n             SELECT id, vote_id, user_fingerprint, scores, cast_at\n             FROM active_votes.ballots WHERE vote_id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "cdf97e3a122c1af3ffaeeda110904c56c8ddb94310e191f0b56e8911e5257d85"
+}

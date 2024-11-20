@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT scores, user_fingerprint FROM active_votes.ballots WHERE vote_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "scores",
+        "type_info": "Int4Array"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_fingerprint",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "1d62dee9b2c5f47c744654cbda6820770a5fa50f68321d07c81fa4b6781426e0"
+}

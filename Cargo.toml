@@ -1,0 +1,20 @@
+[workspace]
+members = [
+    "frontend",
+    "backend", 
+    "shared"
+]
+resolver = "2"
+
+[workspace.dependencies]
+serde = { version = "1.0", features = ["derive"] }
+time = { version = "0.3", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+sqlx = { version = "0.8.2", features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "uuid", 
+    "time",
+    "json",
+    "migrate"
+], default-features = false }

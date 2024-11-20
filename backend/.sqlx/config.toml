@@ -1,0 +1,3 @@
+[sqlx]
+offline = true
+migrations_directory = "migrations"

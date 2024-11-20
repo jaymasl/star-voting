@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE active_votes.votes SET state = 'concluded', archived_at = NOW() WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "54db513c68ee0a29449fae47c74b0743f8b9f1e975c0810289e70af34711f2f2"
+}
