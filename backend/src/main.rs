@@ -61,7 +61,7 @@ async fn run_cleanup_task(pool: PgPool) {
 
 #[rocket::get("/<path..>")]
 async fn spa_handler(path: std::path::PathBuf, temp_dir: &rocket::State<std::path::PathBuf>) -> Option<NamedFile> {
-    tracing::debug!("Serving path: {}", path.display());
+    tracing::info!(target: "spa_handler", "Request: {}\n", path.display());
     let file_path = temp_dir.join(&path);
     if file_path.exists() && file_path.is_file() {
         NamedFile::open(&file_path).await.ok()
@@ -101,6 +101,7 @@ async fn rocket(
     tokio::spawn(run_cleanup_task(pool.clone()));
 
     let rocket = rocket::build()
+        .configure(rocket::Config::debug_default())
         .attach(CORS)
         .manage(app_state)
         .manage(temp_dir.clone())
