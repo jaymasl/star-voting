@@ -20,7 +20,6 @@ rustrict = "0.7.31"
 ring = "0.16"
 base64 = "0.21"
 tokio = { version = "1.26.0", features = ["full"] }
-env_logger = "0.10.0"
 futures = "0.3"
 hcaptcha = "2.2.1"
 include_dir = "0.7"
