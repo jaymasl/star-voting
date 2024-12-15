@@ -61,7 +61,6 @@ async fn run_cleanup_task(pool: PgPool) {
 
 #[rocket::get("/<path..>")]
 async fn spa_handler(path: std::path::PathBuf, temp_dir: &rocket::State<std::path::PathBuf>) -> Option<NamedFile> {
-    info!("Static file request: {}", path.display());
     let file_path = temp_dir.join(&path);
     if file_path.exists() && file_path.is_file() {
         NamedFile::open(&file_path).await.ok()

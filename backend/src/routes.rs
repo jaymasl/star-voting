@@ -118,11 +118,13 @@ fn check_combined_options_for_profanity(options: &[String]) -> Result<(), String
     Ok(())
 }
 
+#[instrument(skip(state), err)]
 #[get("/csrf-token")]
 pub async fn get_csrf_token(state: &State<AppState>) -> Result<String, Status> {
     state.csrf.generate_token()
 }
 
+#[instrument(skip(state), err)]
 #[get("/votes")]
 pub async fn list_votes(state: &State<AppState>) -> Result<Json<Vec<Vote>>, Status> {
     VoteProcessor::fetch_all_votes(&state.db)
@@ -131,6 +133,7 @@ pub async fn list_votes(state: &State<AppState>) -> Result<Json<Vec<Vote>>, Stat
         .map_err(|_| Status::InternalServerError)
 }
 
+#[instrument]
 #[rocket::options("/<_..>")]
 pub async fn all_options() -> Status {
     Status::Ok
@@ -257,7 +260,22 @@ pub async fn cast_ballot(
         return Err((Status::TooManyRequests, Json(e)));
     }
 
-    let scores: Vec<_> = ballot_data.scores.values().map(|&s| s as i32).collect();
+    let vote = VoteProcessor::get_vote_db(&state.db, uuid)
+        .await
+        .map_err(|_| (
+            Status::InternalServerError,
+            Json(ErrorResponse { error: "Failed to retrieve vote".into() })
+        ))?
+        .ok_or_else(|| (
+            Status::NotFound,
+            Json(ErrorResponse { error: "Vote not found".into() })
+        ))?;
+
+    let scores: Vec<_> = vote.options.iter()
+        .map(|opt| ballot_data.scores.get(opt)
+            .map(|&score| score as i32)
+            .unwrap_or(0))
+        .collect();
 
     let result = sqlx::query!(
         "INSERT INTO active_votes.ballots (vote_id, user_fingerprint, scores) 
@@ -284,6 +302,7 @@ pub async fn cast_ballot(
     }))
 }
 
+#[instrument(skip(state), fields(vote_id = %id), err)]
 #[get("/vote/<id>/result")]
 pub async fn get_result(state: &State<AppState>, id: &str) -> Result<Json<VoteResult>, Status> {
     let uuid = parse_vote_id(id).map_err(|_| Status::BadRequest)?;
@@ -297,6 +316,7 @@ pub async fn get_result(state: &State<AppState>, id: &str) -> Result<Json<VoteRe
     }
 }
 
+#[instrument(skip(state), fields(vote_id = %id), err)]
 #[get("/vote/<id>")]
 pub async fn get_vote(state: &State<AppState>, id: &str) -> Result<Json<Option<Vote>>, Status> {
     let uuid = parse_vote_id(id).map_err(|_| Status::BadRequest)?;
